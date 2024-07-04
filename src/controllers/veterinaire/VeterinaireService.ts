@@ -77,6 +77,39 @@ export class VeterinaireService {
         return result;
     }
 
+    async getAntiTiqueForAdmin(animalName: string ): Promise<{ id: string; anti_tique: boolean }[]> {
+        const animals = await VeterinaireModel.find({ animal_name: animalName });
+        const result: { id: string; anti_tique: boolean }[] = [];
+        for (const animal of animals) {
+            if (animal && animal._id && typeof animal.anti_tique === 'boolean') {
+                result.push({
+                    id: animal._id.toString(),
+                    anti_tique: animal.anti_tique,
+                });
+            } else {
+                console.error("Invalid animal entry:", animal);
+            }
+        }
+        return result;
+    }
+    
+
+    async getTraitementForAdmin(animalName: string): Promise<{ id: string; traitement: string }[]> {
+        const animals = await VeterinaireModel.find({ animal_name: animalName });
+        const result: { id: string; traitement: string }[] = [];
+        for (const animal of animals) {
+            if (animal && animal._id && typeof animal.traitement === 'string') {
+                result.push({
+                    id: animal._id.toString(),
+                    traitement: animal.traitement,
+                });
+            } else {
+                console.error("Invalid animal entry:", animal);
+            }
+        }
+        return result;
+    }
+
 
     async getAntiBacterie(userId: string, animalName: string): Promise<{ id: string; anti_bacterie: boolean }[]> {
         const animals = await VeterinaireModel.find({ owners: userId, animal_name: animalName });
@@ -94,21 +127,7 @@ export class VeterinaireService {
         return result;
     }
 
-    async getTraitementForAdmin(name: string): Promise<{ id: string; traitement: string }[]> {
-        const animals = await VeterinaireModel.find({ animal_name: name });
-        const result: { id: string; traitement: string }[] = [];
-        for (const animal of animals) {
-            if (animal && animal._id && typeof animal.traitement === 'string') {
-                result.push({
-                    id: animal._id.toString(),
-                    traitement: animal.traitement,
-                });
-            } else {
-                console.error("Invalid animal entry:", animal);
-            }
-        }
-        return result;
-    }
+
 
     async getAntiVirusForAdmin(name: string): Promise<{ id: string; anti_virus: boolean }[]> {
         const animals = await VeterinaireModel.find({ animal_name: name });
@@ -186,21 +205,6 @@ export class VeterinaireService {
         return { id: updatedAnimal._id.toString(), anti_virus: updatedAnimal.anti_virus };
     }
 
-    async getAntiTiqueForAdmin(animalName: string): Promise<{ id: string; anti_tique: boolean }[]> {
-        const animals = await VeterinaireModel.find({ animal_name: animalName });
-        const result: { id: string; anti_tique: boolean }[] = [];
-        for (const animal of animals) {
-            if (animal && animal._id && typeof animal.anti_tique === 'boolean') {
-                result.push({
-                    id: animal._id.toString(),
-                    anti_tique: animal.anti_tique,
-                });
-            } else {
-                console.error("Invalid animal entry:", animal);
-            }
-        }
-        return result;
-    }
 
     async createAntiTique(data: { anti_tique: boolean, animal_name: string }): Promise<{ id: string; anti_tique: boolean }> {
         const newAnimal = await VeterinaireModel.create(data);
@@ -386,6 +390,14 @@ export class VeterinaireService {
             throw new Error(`Animal with name ${animalName} not found`);
         }
         return deletedAnimal;
+    }
+
+    async getAntiPucesForAdmin(animalName: string): Promise<{ id: string; anti_puce: boolean }[]> {
+        const animals = await VeterinaireModel.find({ animal_name: animalName });
+        if (!animals || animals.length === 0) {
+            return [];
+        }
+        return animals.map((animal) => ({ id: animal._id, anti_puce: animal.anti_puce }));
     }
 
 }

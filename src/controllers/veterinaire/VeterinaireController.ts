@@ -1,7 +1,8 @@
 import { Controller } from "@tsed/di";
-import { Post, Get, Put, Delete } from "@tsed/schema";
+import { Post, Get, Put, Delete, Path } from "@tsed/schema";
 import { BodyParams, PathParams, QueryParams } from "@tsed/common";
 import { VeterinaireService } from "./VeterinaireService";
+import { get } from "config";
 
 interface Animal {
     _id: string;
@@ -52,6 +53,9 @@ export class VeterinaireController {
         return this.veterinaireService.getAntiTique(userId, animalName);
     }
 
+
+
+
     @Get("/antibacteries/:userId/:animalName")
     async getAntiBacteries(
         @PathParams("userId") userId: string,
@@ -66,11 +70,6 @@ export class VeterinaireController {
     }
 
 
-
-    @Get("/Admin-antitiques")
-    async getAdminAntiTiques(@QueryParams("name") name: string): Promise<{ id: string; anti_tique: boolean }[]> {
-        return this.veterinaireService.getAntiTiqueForAdmin(name);
-    }
 
     @Post("/antitiques")
     async createAntiTique(@BodyParams() data: { anti_tique: boolean, animal_name: string }): Promise<{ id: string; anti_tique: boolean }> {
@@ -158,9 +157,9 @@ export class VeterinaireController {
         return this.veterinaireService.getAntiPuce(userId, animalName);
     }
 
-    @Get("/Admin-antipuces")
-    async getAdminAntiPuces(@QueryParams("name") name: string): Promise<{ id: string; anti_puce: boolean }[]> {
-        return this.veterinaireService.getAntiPuceForAdmin(name);
+    @Get("/Admin-antipuces/:animalName")
+    async getAdminAntiPuces(@PathParams("animalName") animalName: string): Promise<{ id: string; anti_puce: boolean }[]> {
+        return this.veterinaireService.getAntiPucesForAdmin(animalName);
     }
 
     @Get("/animalname/:ownerId/:race_id")
@@ -201,10 +200,18 @@ export class VeterinaireController {
         }
     }
 
-    @Get("/Admin-traitement")
-    async getAdminTraitement(@QueryParams("name") animal_name: string): Promise<{ id: string; traitement: string }[]> {
-        return this.veterinaireService.getTraitementForAdmin(animal_name);
+    @Get("/Admin-traitement/:animalName")
+    async getAdminTraitement(@PathParams("animalName") animalName: string ): Promise<{ id: string; traitement: string }[]> {
+        return this.veterinaireService.getTraitementForAdmin(animalName);
     }
+
+    @Get("/Admin-antitiques/:animalName")
+    async getAdminAntiTiques(@PathParams("animalName") animalName: string): Promise<{ id: string; anti_tique: boolean }[]> {
+        return this.veterinaireService.getAntiTiqueForAdmin(animalName);
+    }
+
+
+
 
     @Get("/traitement/:userId/:animalName")
     async getTraitement(
@@ -213,6 +220,8 @@ export class VeterinaireController {
     ): Promise<{ id: string; traitement: string }[]> {
         return this.veterinaireService.getTraitement(userId, animalName);
     }
+
+
 
     @Post("/traitement")
     async createTraitement(@BodyParams() data: { traitement: string, animal_name: string }): Promise<{ id: string; traitement: string }> {
