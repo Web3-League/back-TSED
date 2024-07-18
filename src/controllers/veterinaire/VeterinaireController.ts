@@ -45,6 +45,7 @@ export class VeterinaireController {
     }
   }*/
 
+
     @Get("/antitiques/:userId/:animalName")
     async getAntiTiques(
         @PathParams("userId") userId: string,
@@ -68,8 +69,6 @@ export class VeterinaireController {
     async getAdminAntiBacteries(@QueryParams("name") name: string): Promise<{ id: string; anti_bacterie: boolean }[]> {
         return this.veterinaireService.getAntiBacterieForAdmin(name);
     }
-
-
 
     @Post("/antitiques")
     async createAntiTique(@BodyParams() data: { anti_tique: boolean, animal_name: string }): Promise<{ id: string; anti_tique: boolean }> {
@@ -201,7 +200,7 @@ export class VeterinaireController {
     }
 
     @Get("/Admin-traitement/:animalName")
-    async getAdminTraitement(@PathParams("animalName") animalName: string ): Promise<{ id: string; traitement: string }[]> {
+    async getAdminTraitement(@PathParams("animalName") animalName: string): Promise<{ id: string; traitement: string }[]> {
         return this.veterinaireService.getTraitementForAdmin(animalName);
     }
 
@@ -227,6 +226,8 @@ export class VeterinaireController {
     async createTraitement(@BodyParams() data: { traitement: string, animal_name: string }): Promise<{ id: string; traitement: string }> {
         return this.veterinaireService.createTraitement(data);
     }
+
+
 
 }
 

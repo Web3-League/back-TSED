@@ -182,6 +182,14 @@ export class VeterinaireService {
         return { id: updatedAnimal._id.toString(), anti_bacterie: updatedAnimal.anti_bacterie };
     }
 
+    async updateAntiTique(animalName: string, data: { anti_tique: boolean }): Promise<{ id: string; anti_tique: boolean }> {
+        const updatedAnimal = await VeterinaireModel.findOneAndUpdate({ animal_name: animalName }, data, { new: true });
+        if (!updatedAnimal) {
+            throw new Error(`Animal with name ${animalName} not found`);
+        }
+        return { id: updatedAnimal._id.toString(), anti_tique: updatedAnimal.anti_tique };
+    }
+    
     async createTraitement(data: { traitement: string, animal_name: string }): Promise<{ id: string; traitement: string }> {
         const newAnimal = await VeterinaireModel.create(data);
         return { id: newAnimal._id.toString(), traitement: newAnimal.traitement };
@@ -205,19 +213,12 @@ export class VeterinaireService {
         return { id: updatedAnimal._id.toString(), anti_virus: updatedAnimal.anti_virus };
     }
 
-
     async createAntiTique(data: { anti_tique: boolean, animal_name: string }): Promise<{ id: string; anti_tique: boolean }> {
         const newAnimal = await VeterinaireModel.create(data);
         return { id: newAnimal._id.toString(), anti_tique: newAnimal.anti_tique };
     }
 
-    async updateAntiTique(animalName: string, data: { anti_tique: boolean }): Promise<{ id: string; anti_tique: boolean }> {
-        const updatedAnimal = await VeterinaireModel.findOneAndUpdate({ animal_name: animalName }, data, { new: true });
-        if (!updatedAnimal) {
-            throw new Error(`Animal with name ${animalName} not found`);
-        }
-        return { id: updatedAnimal._id.toString(), anti_tique: updatedAnimal.anti_tique };
-    }
+
 
     async getAntiPuce(userId: string, animalName: string): Promise<{ id: string; anti_puce: boolean }[]> {
         const animals = await VeterinaireModel.find({ owners: userId, animal_name: animalName });
@@ -322,17 +323,13 @@ export class VeterinaireService {
     }
 
     async getAnimalNameByRace(race_id: string): Promise<{ animal_name: string; owners: string[] }[]> {
-        // Validate race_id
         if (!this.isValidUUID(race_id) && !mongoose.Types.ObjectId.isValid(race_id)) {
             throw new Error('Invalid race ID');
         }
-
         const animals = await VeterinaireModel.find({ race_id });
-
         if (!animals || animals.length === 0) {
             return [];
         }
-
         return animals.map((animal) => ({ animal_name: animal.animal_name, owners: animal.owners }));
     }
 
@@ -401,3 +398,4 @@ export class VeterinaireService {
     }
 
 }
+

@@ -10,17 +10,7 @@ export interface IRace extends Document {
 const RaceSchema: Schema = new Schema({
   _id: { type: String, required: true, default: () => crypto.randomUUID() },
   race: { type: String, required: true },
-  veterinaire_id: { 
-    type: String, 
-    required: true,
-    validate: {
-      validator: function(v: string) {
-        return mongoose.Types.ObjectId.isValid(v);
-      },
-      message: (props: any) => `${props.value} is not a valid ObjectId!`
-    },
-    ref: "Veterinaire",
-  }
+
 });
 
 RaceSchema.pre('save', async function(next) {
